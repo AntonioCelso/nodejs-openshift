@@ -59,7 +59,7 @@ db.once('open', function () {
     console.log("Connected correctly to server");
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get('/', function (req, res) {
