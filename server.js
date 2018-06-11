@@ -35,8 +35,10 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
     mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
 
   }
+  console.log("conectado nuvem ", mongoURL);
 }
 else{
+  console.log("conectado local");
   mongoURL = 'mongodb://localhost:27017/comprecotas';
 }
 
