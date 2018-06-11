@@ -39,7 +39,7 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 }
 else{
   console.log("conectado local");
-  mongoURL = 'mongodb://localhost:27017/comprecotas';
+  //mongoURL = 'mongodb://localhost:27017/comprecotas';
 }
 
 
