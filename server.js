@@ -59,7 +59,7 @@ var initDb = function(callback) {
   });
 };
 
-//mongoURL = 'mongodb://localhost:27017/comprecotas';
+mongoURL = 'mongodb://127.0.0.1:27017/sampledb';
 //mongoose conection
 
 
