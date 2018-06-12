@@ -59,6 +59,18 @@ var initDb = function(callback) {
   });
 };
 
+//mongoose conection
+
+
+mongoose.connect(mongoURL);
+
+var dbmongoose = mongoose.connection;
+dbmongoose.on('error', console.error.bind(console, 'erros de conexão:'));
+dbmongoose.once('open', function () {
+    // we're connected!
+    console.log("Connected correctly to server");
+});
+
 app.get('/', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
