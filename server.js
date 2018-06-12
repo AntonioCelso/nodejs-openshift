@@ -38,7 +38,7 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 }
 
 if(mongoURL == null){
-  mongoURL = 'mongodb://127.0.0.1:27017/sampledb';
+  mongoURL = 'mongodb://172.30.83.60:27017/sampledb';
 }
 
 var db = null,
