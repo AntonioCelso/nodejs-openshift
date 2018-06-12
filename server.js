@@ -1,7 +1,10 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
-    morgan  = require('morgan');
+    morgan  = require('morgan'),
+    mongoose = require('mongoose'),
+    path = require('path'),
+    cotasRouter = require('./routes/cotasRouter');
     
 Object.assign=require('object-assign')
 
