@@ -16,6 +16,8 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
     mongoURLLabel = "";
 
+    console.log("port, ip :" port,ip);
+
 if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
   var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
       mongoHost = process.env[mongoServiceName + '_SERVICE_HOST'],
@@ -35,6 +37,9 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 
   }
 }
+console.log("mongoURL:", mongoURL);
+mongoURL = 'mongodb://127.0.0.1:27017/sampledb';
+
 var db = null,
     dbDetails = new Object();
 
@@ -59,7 +64,7 @@ var initDb = function(callback) {
   });
 };
 
-mongoURL = 'mongodb://127.0.0.1:27017/sampledb';
+
 //mongoose conection
 
 
