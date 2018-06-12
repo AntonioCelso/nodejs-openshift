@@ -62,7 +62,7 @@ var initDb = function(callback) {
 //mongoose conection
 
 
-mongoose.connect(mongoURL);
+mongoose.connect('mongodb://localhost/sampledb');
 
 var dbmongoose = mongoose.connection;
 dbmongoose.on('error', console.error.bind(console, 'erros de conexão:'));
