@@ -1,7 +1,10 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
-    morgan  = require('morgan');
+    morgan  = require('morgan'),
+    mongoose = require('mongoose'),
+    path = require('path'),
+    cotasRouter = require('./routes/cotasRouter');
     
 Object.assign=require('object-assign')
 
@@ -12,6 +15,8 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
     mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
     mongoURLLabel = "";
+
+    console.log("port, ip :", port,ip);
 
 if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
   var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
@@ -32,6 +37,10 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 
   }
 }
+console.log("mongoURL:", mongoURL);
+
+mongoURL = 'mongodb://127.0.0.1:27017/sampledb';
+
 var db = null,
     dbDetails = new Object();
 
@@ -56,41 +65,29 @@ var initDb = function(callback) {
   });
 };
 
-app.get('/', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
-  if (db) {
-    var col = db.collection('counts');
-    // Create a document with request IP and current time of request
-    col.insert({ip: req.ip, date: Date.now()});
-    col.count(function(err, count){
-      if (err) {
-        console.log('Error running count. Message:\n'+err);
-      }
-      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
-    });
-  } else {
-    res.render('index.html', { pageCountMessage : null});
-  }
+
+//mongoose conection
+
+
+mongoose.connect(mongoURL);
+
+var dbmongoose = mongoose.connection;
+dbmongoose.on('error', console.error.bind(console, 'erros de conexão:'));
+dbmongoose.once('open', function () {
+    // we're connected!
+    console.log("Connected correctly to server");
 });
 
-app.get('/pagecount', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
-  if (db) {
-    db.collection('counts').count(function(err, count ){
-      res.send('{ pageCount: ' + count + '}');
-    });
-  } else {
-    res.send('{ pageCount: -1 }');
-  }
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.get('/', function (req, res) {
+  
+  res.render('index.html', { pageCountMessage : null});
+ 	
 });
+
+app.use('/cotas', cotasRouter);
 
 // error handling
 app.use(function(err, req, res, next){
@@ -98,9 +95,7 @@ app.use(function(err, req, res, next){
   res.status(500).send('Something bad happened!');
 });
 
-initDb(function(err){
-  console.log('Error connecting to Mongo. Message:\n'+err);
-});
+
 
 app.listen(port, ip);
 console.log('Server running on http://%s:%s', ip, port);
