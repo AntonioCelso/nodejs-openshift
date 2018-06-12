@@ -11,15 +11,11 @@ Object.assign=require('object-assign')
 app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 
-
-
-
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
     mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
     mongoURLLabel = "";
 
-    /*
 if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
   var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
       mongoHost = process.env[mongoServiceName + '_SERVICE_HOST'],
@@ -38,26 +34,40 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
     mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
 
   }
-}*/
-
-var url = '127.0.0.1:27017/' + process.env.OPENSHIFT_APP_NAME;
-
-// if OPENSHIFT env variables are present, use the available connection info:
-if (process.env.OPENSHIFT_MONGODB_DB_URL) {
-    url = process.env.OPENSHIFT_MONGODB_DB_URL +
-    process.env.OPENSHIFT_APP_NAME;
 }
+var db = null,
+    dbDetails = new Object();
 
+var initDb = function(callback) {
+  if (mongoURL == null) return;
 
- //mongoURL = 'mongodb://localhost:27017/comprecotas';
+  var mongodb = require('mongodb');
+  if (mongodb == null) return;
+
+  mongodb.connect(mongoURL, function(err, conn) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    db = conn;
+    dbDetails.databaseName = db.databaseName;
+    dbDetails.url = mongoURLLabel;
+    dbDetails.type = 'MongoDB';
+
+    console.log('Connected to MongoDB at: %s', mongoURL);
+  });
+};
+
+//mongoURL = 'mongodb://localhost:27017/comprecotas';
 //mongoose conection
 
 
 mongoose.connect(mongoURL);
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'erros de conexão:'));
-db.once('open', function () {
+var dbmongoose = mongoose.connection;
+dbmongoose.on('error', console.error.bind(console, 'erros de conexão:'));
+dbmongoose.once('open', function () {
     // we're connected!
     console.log("Connected correctly to server");
 });
