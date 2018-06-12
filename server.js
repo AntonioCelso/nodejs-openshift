@@ -3,8 +3,9 @@ var express = require('express'),
     app     = express(),
     morgan  = require('morgan'),
     mongoose = require('mongoose'),
-    path = require('path'),
-    cotasRouter = require('./routes/cotasRouter');
+    //cotasRouter = require('./routes/cotasRouter'),
+    path = require('path');
+    
     
 Object.assign=require('object-assign')
 
@@ -35,6 +36,11 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 
   }
 }
+
+if(mongoURL == null){
+  mongoURL = 'mongodb://127.0.0.1:27017/sampledb';
+}
+
 var db = null,
     dbDetails = new Object();
 
@@ -61,15 +67,16 @@ var initDb = function(callback) {
 
 //mongoose conection
 
+mongoose.connect(mongoURL);
 
-mongoose.connect('mongodb://localhost/sampledb');
+/*var dbmongoose = mongoose.connection;
 
-var dbmongoose = mongoose.connection;
 dbmongoose.on('error', console.error.bind(console, 'erros de conexão:'));
 dbmongoose.once('open', function () {
     // we're connected!
     console.log("Connected correctly to server");
-});
+});*/
+
 
 app.get('/', function (req, res) {
   // try to initialize the db on every request if it's not already
